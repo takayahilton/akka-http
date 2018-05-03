@@ -604,6 +604,11 @@ private[http] object HttpServerBluePrint {
               complete(toHttp)
               cancel(fromHttp)
               switchToWebSocket(handlerFlow)
+            case SwitchToOtherProtocol(bytes, handlerFlow) ⇒
+              push(toNet, bytes)
+              complete(toHttp)
+              cancel(fromHttp)
+              switchToOtherProtocol(handlerFlow)
           }
         override def onUpstreamFinish(): Unit = complete(toNet)
         override def onUpstreamFailure(ex: Throwable): Unit = fail(toNet, ex)
@@ -652,6 +657,10 @@ private[http] object HttpServerBluePrint {
           case Right(messageHandler) ⇒
             WebSocket.stack(serverSide = true, settings.websocketSettings, log = log).join(messageHandler)
         }
+        switchToOtherProtocol(WebSocket.framing.join(frameHandler))
+      }
+
+      def switchToOtherProtocol(newFlow: Flow[ByteString, ByteString, Any]): Unit = {
 
         val sinkIn = new SubSinkInlet[ByteString]("FrameSink")
         sinkIn.setHandler(new InHandler {
@@ -668,7 +677,7 @@ private[http] object HttpServerBluePrint {
               sinkIn.cancel()
             }
           })
-          WebSocket.framing.join(frameHandler).runWith(Source.empty, sinkIn.sink)(subFusingMaterializer)
+          newFlow.runWith(Source.empty, sinkIn.sink)(subFusingMaterializer)
         } else {
           val sourceOut = new SubSourceOutlet[ByteString]("FrameSource")
 
@@ -715,7 +724,7 @@ private[http] object HttpServerBluePrint {
             override def onDownstreamFinish(): Unit = cancel(fromNet)
           })
 
-          WebSocket.framing.join(frameHandler).runWith(sourceOut.source, sinkIn.sink)(subFusingMaterializer)
+          newFlow.runWith(sourceOut.source, sinkIn.sink)(subFusingMaterializer)
         }
       }
     }
