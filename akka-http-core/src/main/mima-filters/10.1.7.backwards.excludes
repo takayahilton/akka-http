@@ -28,3 +28,8 @@ ProblemFilters.exclude[IncompatibleResultTypeProblem]("akka.http.scaladsl.model.
 
 # Changes to implementation internals
 ProblemFilters.exclude[Problem]("akka.http.impl.engine.parsing.*")
+
+# #427 h2c via 'Upgrade'
+ProblemFilters.exclude[MissingClassProblem]("akka.http.impl.engine.*")
+ProblemFilters.exclude[MissingTypesProblem]("akka.http.impl.engine.*")
+ProblemFilters.exclude[DirectMissingMethodProblem]("akka.http.impl.engine.*")
