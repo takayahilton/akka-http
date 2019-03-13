@@ -4,18 +4,15 @@
 
 package akka.http.scaladsl
 
-import javax.net.ssl.SSLEngine
 import akka.{ Done, NotUsed }
 import akka.actor.{ ActorSystem, ExtendedActorSystem, Extension, ExtensionId, ExtensionIdProvider }
 import akka.dispatch.ExecutionContexts
 import akka.event.LoggingAdapter
-import akka.http.impl.engine.http2.Http2Protocol.SettingIdentifier.SETTINGS_MAX_CONCURRENT_STREAMS
-import akka.http.impl.engine.http2.{ AlpnSwitch, FrameEvent, Http2AlpnSupport, Http2Blueprint }
+import akka.http.impl.engine.http2.{ AlpnSwitch, Http2AlpnSupport, Http2Blueprint }
 import akka.http.impl.engine.server.MasterServerTerminator
 import akka.http.impl.engine.server.UpgradeToOtherProtocolResponseHeader
 import akka.http.impl.util.LogByteStringTools.logTLSBidiBySetting
-import akka.http.impl.util.LogByteStringTools.logTLSBidiBySetting
-import akka.http.scaladsl.UseHttp2.{ Always, Negotiated, Never }
+import akka.http.scaladsl.UseHttp2.{ Always, Never }
 import akka.http.scaladsl.Http.ServerBinding
 import akka.http.scaladsl.model.headers.{ Connection, RawHeader, Upgrade, UpgradeProtocol }
 import akka.http.scaladsl.model.http2.{ Http2SettingsHeader, Http2StreamIdHeader }
@@ -24,13 +21,13 @@ import akka.http.scaladsl.settings.ServerSettings
 import akka.stream.TLSProtocol.{ SendBytes, SessionBytes, SslTlsInbound, SslTlsOutbound }
 import akka.stream.scaladsl.{ BidiFlow, Flow, Keep, Sink, Source, TLS, Tcp }
 import akka.stream.{ IgnoreComplete, Materializer }
-import akka.util.{ ByteString, OptionVal }
+import akka.util.ByteString
 import com.typesafe.config.Config
 import javax.net.ssl.SSLEngine
 
-import scala.concurrent.{ Future, Promise }
+import scala.concurrent.Future
 import scala.collection.immutable
-import scala.util.Success
+import scala.util.{ Failure, Success }
 import scala.util.control.NonFatal
 
 /** Entry point for Http/2 server */
@@ -155,7 +152,9 @@ final class Http2Ext(private val config: Config)(implicit val system: ActorSyste
                 )
               )
             )
-
+          case immutable.Seq(Failure(e)) ⇒
+            log.warning("Failed to parse http2-settings header in upgrade [{}], continuing with HTTP/1.1", e.getMessage)
+            handler(req)
           // A server MUST NOT upgrade the connection to HTTP/2 if this header field
           // is not present or if more than one is present
           case _ ⇒
