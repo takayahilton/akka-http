@@ -7,13 +7,13 @@ package akka.http.impl.engine
 import akka.util.ByteString
 
 package object http2 {
-  implicit class RichString(val str: String) extends AnyVal {
+  implicit class RichString(private val str: String) extends AnyVal {
     def parseHexByteString: ByteString =
       ByteString(
         str.replaceAll("\\s", "").trim.grouped(2).map(Integer.parseInt(_, 16).toByte).toArray
       )
   }
-  implicit class HexInterpolatorString(val sc: StringContext) extends AnyVal {
+  implicit class HexInterpolatorString(private val sc: StringContext) extends AnyVal {
     def hex(args: Any*): ByteString = {
       val strings = sc.parts.iterator
       val expressions = args.iterator

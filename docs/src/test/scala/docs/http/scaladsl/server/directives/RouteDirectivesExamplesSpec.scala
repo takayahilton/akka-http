@@ -48,10 +48,10 @@ class RouteDirectivesExamplesSpec extends RoutingSpec with CompileOnlySpec {
           complete(201 -> "bar")
         },
         path("e") {
-          complete(StatusCodes.Created, List(`Content-Type`(`text/plain(UTF-8)`)), "bar")
+          complete((StatusCodes.Created, List(`Content-Type`(`text/plain(UTF-8)`)), "bar"))
         },
         path("f") {
-          complete(201, List(`Content-Type`(`text/plain(UTF-8)`)), "bar")
+          complete((201, List(`Content-Type`(`text/plain(UTF-8)`)), "bar"))
         },
         path("g") {
           complete(Future { StatusCodes.Created -> "bar" })

@@ -97,7 +97,7 @@ object FastFuture {
       new FastFuture(this).transformWith(f)
   }
 
-  implicit class EnhancedFuture[T](val future: Future[T]) extends AnyVal {
+  implicit class EnhancedFuture[T](private val future: Future[T]) extends AnyVal {
     def fast: FastFuture[T] = new FastFuture[T](future)
   }
 

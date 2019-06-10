@@ -148,7 +148,7 @@ object Directive {
    * Easier to use than `tmap`, `tflatMap`, etc. defined on [[Directive]] itself,
    * because they provide transparent conversion from [[Tuple1]].
    */
-  implicit class SingleValueTransformers[T](val underlying: Directive1[T]) extends AnyVal {
+  implicit class SingleValueTransformers[T](private val underlying: Directive1[T]) extends AnyVal {
     def map[R](f: T => R)(implicit tupler: Tupler[R]): Directive[tupler.Out] =
       underlying.tmap { case Tuple1(value) => f(value) }
 

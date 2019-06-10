@@ -67,13 +67,12 @@ class TimeoutDirectivesExamplesSpec extends AkkaSpec(TimeoutDirectivesInfiniteTi
     }
     "without timeout" in compileOnlySpec {
       //#withoutRequestTimeout
-      val route =
-        path("timeout") {
-          withoutRequestTimeout {
-            val response: Future[String] = slowFuture() // very slow
-            complete(response)
-          }
+      path("timeout") {
+        withoutRequestTimeout {
+          val response: Future[String] = slowFuture() // very slow
+          complete(response)
         }
+      }
 
       // no check as there is no time-out, the future would time out failing the test
       //#withoutRequestTimeout

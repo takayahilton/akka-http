@@ -4,8 +4,8 @@
 
 package akka.http.impl.engine.http2
 
-import akka.http.scaladsl.model.{ HttpResponse, StatusCodes }
-import akka.http.scaladsl.{ Http, HttpConnectionContext }
+import akka.http.scaladsl.model.{ StatusCodes }
+import akka.http.scaladsl.Http
 import akka.http.scaladsl.model.{ HttpRequest, HttpResponse, HttpProtocols }
 import akka.stream.ActorMaterializer
 import java.util.Base64

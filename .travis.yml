@@ -26,6 +26,7 @@ cache:
     - $HOME/.ivy2/cache
     - $HOME/.sbt/boot
     - $HOME/.jabba/jdk
+    - $HOME/.coursier/cache
 
 script:
   - jabba use "adopt@1.8.192-12"
@@ -34,6 +35,8 @@ script:
 
 jobs:
   include:
+    - stage: scalafix
+      env: CMD="+fixCheck"
     - stage: mima
       env: CMD="+mimaReportBinaryIssues"
     - stage: whitesource
@@ -43,6 +46,8 @@ jobs:
 
 stages:
   - name: mima
+
+  - name: scalafix
 
   - name: whitesource
     if: repo=akka/akka-http AND ( ( branch = master AND type = push ) OR tag =~ ^v )

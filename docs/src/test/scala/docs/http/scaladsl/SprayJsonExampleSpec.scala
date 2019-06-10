@@ -96,7 +96,7 @@ class SprayJsonExampleSpec extends WordSpec with Matchers {
         Future { Done }
       }
 
-      def main(args: Array[String]) {
+      def main(args: Array[String]): Unit = {
 
         val route: Route =
           concat(

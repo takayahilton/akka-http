@@ -9,9 +9,8 @@ import javax.net.ssl.SSLException
 import akka.NotUsed
 import akka.annotation.InternalApi
 import akka.http.impl.engine.server.HttpAttributes
-import akka.http.scaladsl.model.{ HttpRequest, HttpResponse }
 import akka.stream.TLSProtocol.{ SessionBytes, SessionTruncated, SslTlsInbound, SslTlsOutbound }
-import akka.stream.scaladsl.{ BidiFlow, Flow }
+import akka.stream.scaladsl.Flow
 import akka.stream.stage.{ GraphStage, GraphStageLogic, InHandler, OutHandler }
 import akka.stream._
 
@@ -59,7 +58,7 @@ private[http] object ProtocolSwitch {
           })
 
           private val ignorePull = new OutHandler { def onPull(): Unit = () }
-          private val failPush = new InHandler { def onPush(): Unit = throw new IllegalStateException("Wasn't pulled yet") }
+          new InHandler { def onPush(): Unit = throw new IllegalStateException("Wasn't pulled yet") }
 
           setHandler(netOut, ignorePull)
 

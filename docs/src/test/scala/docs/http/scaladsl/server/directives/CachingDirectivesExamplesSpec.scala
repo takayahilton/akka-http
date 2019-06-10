@@ -163,7 +163,7 @@ class CachingDirectivesExamplesSpec extends RoutingSpec with CompileOnlySpec {
     val lfuCache: Cache[Uri, RouteResult] = LfuCache(cachingSettings)
 
     // Create the route
-    val route = cache(lfuCache, keyerFunction)(innerRoute)
+    cache(lfuCache, keyerFunction)(innerRoute)
     //#create-cache
 
     // We don't test the eviction settings here. Deterministic testing of eviction is hard because

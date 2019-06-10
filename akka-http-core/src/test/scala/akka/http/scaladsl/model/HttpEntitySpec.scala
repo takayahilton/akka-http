@@ -20,7 +20,6 @@ import akka.stream.ActorMaterializer
 import akka.http.scaladsl.model.HttpEntity._
 import akka.http.impl.util.StreamUtils
 import akka.testkit._
-import org.scalatest.concurrent.ScalaFutures
 
 import scala.util.Random
 

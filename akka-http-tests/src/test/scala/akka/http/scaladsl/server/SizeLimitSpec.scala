@@ -17,7 +17,7 @@ import akka.http.scaladsl.model.HttpEntity.Chunk
 import akka.http.scaladsl.model.headers.{ HttpEncoding, HttpEncodings, `Content-Encoding` }
 import akka.stream.ActorMaterializer
 import akka.stream.scaladsl.{ Flow, Source }
-import akka.testkit.{ EventFilter, TestKit }
+import akka.testkit.TestKit
 import akka.util.ByteString
 import com.typesafe.config.{ Config, ConfigFactory }
 import org.scalatest.{ BeforeAndAfterAll, Matchers, WordSpec }

@@ -12,7 +12,6 @@ import com.typesafe.config.Config
 import scala.concurrent.duration.Duration
 import akka.http.impl.util.JavaMapping.Implicits._
 import akka.http.javadsl.ClientTransport
-import akka.http.scaladsl.settings.ConnectionPoolSettings
 
 import scala.concurrent.duration.FiniteDuration
 

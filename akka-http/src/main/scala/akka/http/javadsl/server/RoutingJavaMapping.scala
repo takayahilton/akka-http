@@ -79,7 +79,7 @@ private[http] object RoutingJavaMapping {
   //  val javaToScalaHttpEntity extends Inherited[javadsl.model.HttpEntity, scaladsl.model.HttpEntity]
   //  val javaToScalaResponseEntity extends Inherited[javadsl.model.ResponseEntity, scaladsl.model.ResponseEntity]
 
-  implicit final class ConvertCompletionStage[T](val stage: CompletionStage[T]) extends AnyVal {
+  implicit final class ConvertCompletionStage[T](private val stage: CompletionStage[T]) extends AnyVal {
     import scala.compat.java8.FutureConverters._
     def asScala = stage.toScala
   }

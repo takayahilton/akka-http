@@ -389,7 +389,7 @@ class FileAndResourceDirectivesSpec extends RoutingSpec with Inspectors with Ins
       }
     }
     "properly render an empty sub directory with vanity footer" in {
-      val settings = 0 // shadow implicit
+      // shadow implicit
       Get("/emptySub/") ~> listDirectoryContents(base + "/subDirectory") ~> check {
         eraseDateTime(responseAs[String]) shouldEqual prep {
           """<html>

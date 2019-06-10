@@ -74,10 +74,10 @@ package object util {
     } else bytes.toString + "  B"
   }
 
-  private[http] implicit class RichHttpRequest(val request: HttpRequest) extends AnyVal {
+  private[http] implicit class RichHttpRequest(private val request: HttpRequest) extends AnyVal {
     def debugString: String = s"${request.method.value} ${request.uri.path} ${entityDebugInfo(request.entity)}"
   }
-  private[http] implicit class RichHttpResponse(val response: HttpResponse) extends AnyVal {
+  private[http] implicit class RichHttpResponse(private val response: HttpResponse) extends AnyVal {
     def debugString: String = s"${response.status.value} ${entityDebugInfo(response.entity)}"
   }
   private def entityDebugInfo(e: HttpEntity): String = e match {

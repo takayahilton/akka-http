@@ -69,7 +69,7 @@ class ModelSpec extends AkkaSpec {
     import akka.http.scaladsl.model.headers._
 
     // create a ``Location`` header
-    val loc = Location("http://example.com/other")
+    Location("http://example.com/other")
 
     // create an ``Authorization`` header with HTTP Basic authentication data
     val auth = Authorization(BasicHttpCredentials("joe", "josepp"))
@@ -92,7 +92,7 @@ class ModelSpec extends AkkaSpec {
   "Synthetic-header-s3" in {
     //#synthetic-header-s3
     import akka.http.scaladsl.model.headers.`Raw-Request-URI`
-    val req = HttpRequest(uri = "/ignored", headers = List(`Raw-Request-URI`("/a/b%2Bc")))
+    HttpRequest(uri = "/ignored", headers = List(`Raw-Request-URI`("/a/b%2Bc")))
     //#synthetic-header-s3
   }
 }

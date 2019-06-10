@@ -200,7 +200,7 @@ class HttpClientExampleSpec extends WordSpec with Matchers with CompileOnlySpec 
       }
     }
 
-    val responseFuture: Future[HttpResponse] = queueRequest(HttpRequest(uri = "/"))
+    queueRequest(HttpRequest(uri = "/"))
     //#host-level-queue-example
   }
 
@@ -322,7 +322,7 @@ class HttpClientExampleSpec extends WordSpec with Matchers with CompileOnlySpec 
     case class Pet(name: String)
     implicit val petFormat = jsonFormat1(Pet)
 
-    val pet: Future[Pet] = Unmarshal(response).to[Pet]
+    Unmarshal(response).to[Pet]
     //#unmarshal-response-body
   }
 

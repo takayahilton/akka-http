@@ -13,7 +13,7 @@ class FormFieldDirectivesExamplesSpec extends RoutingSpec with CompileOnlySpec {
   "formFields" in {
     //#formFields
     val route =
-      formFields('color, 'age.as[Int]) { (color, age) =>
+      formFields(('color, 'age.as[Int])) { (color, age) =>
         complete(s"The color is '$color' and the age ten years ago was ${age - 10}")
       }
 

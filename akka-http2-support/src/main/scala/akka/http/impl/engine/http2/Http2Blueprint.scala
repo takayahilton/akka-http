@@ -21,7 +21,6 @@ import akka.util.ByteString
 import scala.concurrent.{ ExecutionContext, Future }
 
 import FrameEvent._
-import akka.http.scaladsl.Http2
 import akka.stream.TLSProtocol._
 
 /**

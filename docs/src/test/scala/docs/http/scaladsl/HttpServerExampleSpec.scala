@@ -4,8 +4,6 @@
 
 package docs.http.scaladsl
 
-import akka.actor.CoordinatedShutdown
-import akka.actor.CoordinatedShutdown.UnknownReason
 import akka.event.LoggingAdapter
 import akka.http.scaladsl.Http
 import akka.http.scaladsl.model.StatusCodes
@@ -35,11 +33,10 @@ class HttpServerExampleSpec extends WordSpec with Matchers
 
     val serverSource: Source[Http.IncomingConnection, Future[Http.ServerBinding]] =
       Http().bind(interface = "localhost", port = 8080)
-    val bindingFuture: Future[Http.ServerBinding] =
-      serverSource.to(Sink.foreach { connection => // foreach materializes the source
-        println("Accepted new connection from " + connection.remoteAddress)
-        // ... and then actually handle the connection
-      }).run()
+    serverSource.to(Sink.foreach { connection => // foreach materializes the source
+      println("Accepted new connection from " + connection.remoteAddress)
+      // ... and then actually handle the connection
+    }).run()
     //#binding-example
   }
 
@@ -54,7 +51,7 @@ class HttpServerExampleSpec extends WordSpec with Matchers
     import scala.concurrent.Future
 
     object WebServer {
-      def main(args: Array[String]) {
+      def main(args: Array[String]): Unit = {
         implicit val system = ActorSystem()
         implicit val materializer = ActorMaterializer()
         // needed for the future foreach in the end
@@ -213,14 +210,13 @@ class HttpServerExampleSpec extends WordSpec with Matchers
         HttpResponse(404, entity = "Unknown resource!")
     }
 
-    val bindingFuture: Future[Http.ServerBinding] =
-      serverSource.to(Sink.foreach { connection =>
-        println("Accepted new connection from " + connection.remoteAddress)
+    serverSource.to(Sink.foreach { connection =>
+      println("Accepted new connection from " + connection.remoteAddress)
 
-        connection handleWithSyncHandler requestHandler
-        // this is equivalent to
-        // connection handleWith { Flow[HttpRequest] map requestHandler }
-      }).run()
+      connection handleWithSyncHandler requestHandler
+      // this is equivalent to
+      // connection handleWith { Flow[HttpRequest] map requestHandler }
+    }).run()
     //#full-server-example
   }
 
@@ -235,7 +231,7 @@ class HttpServerExampleSpec extends WordSpec with Matchers
 
     object WebServer {
 
-      def main(args: Array[String]) {
+      def main(args: Array[String]): Unit = {
         implicit val system = ActorSystem()
         implicit val materializer = ActorMaterializer()
         // needed for the future map/flatmap in the end
@@ -280,7 +276,7 @@ class HttpServerExampleSpec extends WordSpec with Matchers
     import scala.io.StdIn
 
     object WebServer {
-      def main(args: Array[String]) {
+      def main(args: Array[String]): Unit = {
         implicit val system = ActorSystem()
         implicit val materializer = ActorMaterializer()
         // needed for the future flatMap/onComplete in the end
@@ -323,7 +319,7 @@ class HttpServerExampleSpec extends WordSpec with Matchers
     import scala.io.StdIn
 
     object WebServer {
-      def main(args: Array[String]) {
+      def main(args: Array[String]): Unit = {
 
         implicit val system = ActorSystem("my-system")
         implicit val materializer = ActorMaterializer()
@@ -384,7 +380,7 @@ class HttpServerExampleSpec extends WordSpec with Matchers
     def myDbActor: ActorRef = ???
     def processOrderRequest(id: Int, complete: Order => Unit): Unit = ???
 
-    val route = concat(
+    concat(
       path("orders") {
         authenticateBasic(realm = "admin area", myAuthenticator) { user =>
           concat(
@@ -476,7 +472,7 @@ class HttpServerExampleSpec extends WordSpec with Matchers
 
     object WebServer {
 
-      def main(args: Array[String]) {
+      def main(args: Array[String]): Unit = {
 
         implicit val system = ActorSystem()
         implicit val materializer = ActorMaterializer()
@@ -548,7 +544,7 @@ class HttpServerExampleSpec extends WordSpec with Matchers
       implicit val bidFormat = jsonFormat2(Bid)
       implicit val bidsFormat = jsonFormat1(Bids)
 
-      def main(args: Array[String]) {
+      def main(args: Array[String]): Unit = {
         implicit val system = ActorSystem()
         implicit val materializer = ActorMaterializer()
         // needed for the future flatMap/onComplete in the end
@@ -560,7 +556,7 @@ class HttpServerExampleSpec extends WordSpec with Matchers
           path("auction") {
             concat(
               put {
-                parameter("bid".as[Int], "user") { (bid, user) =>
+                parameter(("bid".as[Int], "user")) { (bid, user) =>
                   // place a bid, fire-and-forget
                   auction ! Bid(user, bid)
                   complete((StatusCodes.Accepted, "bid placed"))
@@ -606,15 +602,14 @@ class HttpServerExampleSpec extends WordSpec with Matchers
     // these are from spray-json
     implicit val bidFormat = jsonFormat2(Bid)
 
-    val route =
-      path("bid") {
-        put {
-          entity(as[Bid]) { bid =>
-            // incoming entity is fully consumed and converted into a Bid
-            complete("The bid was: " + bid)
-          }
+    path("bid") {
+      put {
+        entity(as[Bid]) { bid =>
+          // incoming entity is fully consumed and converted into a Bid
+          complete("The bid was: " + bid)
         }
       }
+    }
     //#consume-entity-directive
   }
 
@@ -631,19 +626,18 @@ class HttpServerExampleSpec extends WordSpec with Matchers
     // needed for the future flatMap/onComplete in the end
     implicit val executionContext = system.dispatcher
 
-    val route =
-      (put & path("lines")) {
-        withoutSizeLimit {
-          extractDataBytes { bytes =>
-            val finishedWriting = bytes.runWith(FileIO.toPath(new File("/tmp/example.out").toPath))
+    (put & path("lines")) {
+      withoutSizeLimit {
+        extractDataBytes { bytes =>
+          val finishedWriting = bytes.runWith(FileIO.toPath(new File("/tmp/example.out").toPath))
 
-            // we only want to respond once the incoming data has been handled:
-            onComplete(finishedWriting) { ioResult =>
-              complete("Finished writing data: " + ioResult)
-            }
+          // we only want to respond once the incoming data has been handled:
+          onComplete(finishedWriting) { ioResult =>
+            complete("Finished writing data: " + ioResult)
           }
         }
       }
+    }
     //#consume-raw-dataBytes
   }
 
@@ -659,19 +653,18 @@ class HttpServerExampleSpec extends WordSpec with Matchers
     // needed for the future flatMap/onComplete in the end
     implicit val executionContext = system.dispatcher
 
-    val route =
-      (put & path("lines")) {
-        withoutSizeLimit {
-          extractRequest { r: HttpRequest =>
-            val finishedWriting = r.discardEntityBytes().future
+    (put & path("lines")) {
+      withoutSizeLimit {
+        extractRequest { r: HttpRequest =>
+          val finishedWriting = r.discardEntityBytes().future
 
-            // we only want to respond once the incoming data has been handled:
-            onComplete(finishedWriting) { done =>
-              complete("Drained all data from connection... (" + done + ")")
-            }
+          // we only want to respond once the incoming data has been handled:
+          onComplete(finishedWriting) { done =>
+            complete("Drained all data from connection... (" + done + ")")
           }
         }
       }
+    }
     //#discard-discardEntityBytes
   }
 
@@ -688,22 +681,21 @@ class HttpServerExampleSpec extends WordSpec with Matchers
     // needed for the future flatMap/onComplete in the end
     implicit val executionContext = system.dispatcher
 
-    val route =
-      (put & path("lines")) {
-        withoutSizeLimit {
-          extractDataBytes { data =>
-            // Closing connections, method 1 (eager):
-            // we deem this request as illegal, and close the connection right away:
-            data.runWith(Sink.cancelled) // "brutally" closes the connection
+    (put & path("lines")) {
+      withoutSizeLimit {
+        extractDataBytes { data =>
+          // Closing connections, method 1 (eager):
+          // we deem this request as illegal, and close the connection right away:
+          data.runWith(Sink.cancelled) // "brutally" closes the connection
 
-            // Closing connections, method 2 (graceful):
-            // consider draining connection and replying with `Connection: Close` header
-            // if you want the client to close after this request/reply cycle instead:
-            respondWithHeader(Connection("close"))
-            complete(StatusCodes.Forbidden -> "Not allowed!")
-          }
+          // Closing connections, method 2 (graceful):
+          // consider draining connection and replying with `Connection: Close` header
+          // if you want the client to close after this request/reply cycle instead:
+          respondWithHeader(Connection("close"))
+          complete(StatusCodes.Forbidden -> "Not allowed!")
         }
       }
+    }
     //#discard-close-connections
   }
 
@@ -751,7 +743,7 @@ class HttpServerExampleSpec extends WordSpec with Matchers
       concat(routes.toList: _*)(ctx)
     }
 
-    val route = fixedRoute ~ dynamicRoute
+    fixedRoute ~ dynamicRoute
     //#dynamic-routing-example
   }
 
@@ -759,7 +751,6 @@ class HttpServerExampleSpec extends WordSpec with Matchers
     //#graceful-termination
     import akka.actor.ActorSystem
     import akka.http.scaladsl.server.Directives._
-    import akka.http.scaladsl.server.Route
     import akka.stream.ActorMaterializer
     import scala.concurrent.duration._
 

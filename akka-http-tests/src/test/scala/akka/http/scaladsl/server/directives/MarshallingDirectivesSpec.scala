@@ -148,7 +148,7 @@ class MarshallingDirectivesSpec extends RoutingSpec with Inside {
 
       val route =
         path("589") {
-          complete(StatusCodes.NoContent, doSomethingWhichReturnsAFailedFuture())
+          complete((StatusCodes.NoContent, doSomethingWhichReturnsAFailedFuture()))
         }
 
       EventFilter[Exception](pattern = "^Error during processing of request: 'oops'", occurrences = 1) intercept {
@@ -164,7 +164,7 @@ class MarshallingDirectivesSpec extends RoutingSpec with Inside {
 
       val route =
         path("589") {
-          complete(StatusCodes.NoContent, doSomethingWhichReturnsASuccessfulFuture())
+          complete((StatusCodes.NoContent, doSomethingWhichReturnsASuccessfulFuture()))
         }
 
       Get("/589") ~> route ~> check {

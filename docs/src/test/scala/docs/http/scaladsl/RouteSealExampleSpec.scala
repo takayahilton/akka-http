@@ -12,7 +12,7 @@ class RouteSealExampleSpec extends RoutingSpec with Directives with CompileOnlyS
 
   "seal route example" in compileOnlySpec {
     //#route-seal-example
-    val route = respondWithHeader(RawHeader("special-header", "you always have this even in 404")) {
+    respondWithHeader(RawHeader("special-header", "you always have this even in 404")) {
       Route.seal(
         get {
           pathSingleSlash {

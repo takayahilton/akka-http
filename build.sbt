@@ -10,6 +10,11 @@ import sbtdynver.GitDescribeOutput
 import spray.boilerplate.BoilerplatePlugin
 import com.lightbend.paradox.apidoc.ApidocPlugin.autoImport.apidocRootPackage
 
+addCommandAlias(
+  "fixCheck",
+  "; compile:scalafix --check ; test:scalafix --check"
+)
+
 inThisBuild(Def.settings(
   organization := "com.typesafe.akka",
   organizationName := "Lightbend",
@@ -38,8 +43,10 @@ inThisBuild(Def.settings(
     "-unchecked",
     "-Xlint",
     // "-Yno-adapted-args", //akka-http heavily depends on adapted args and => Unit implicits break otherwise
-    "-Ywarn-dead-code"
+    "-Ywarn-dead-code",
     // "-Xfuture" // breaks => Unit implicits
+    "-Yrangepos",
+    "-Ywarn-unused-import"
   ),
   javacOptions ++= Seq(
     "-encoding", "UTF-8",
@@ -51,6 +58,7 @@ inThisBuild(Def.settings(
   Formatting.formatSettings,
   shellPrompt := { s => Project.extract(s).currentProject.id + " > " },
   concurrentRestrictions in Global += Tags.limit(Tags.Test, 1),
+  addCompilerPlugin(scalafixSemanticdb)
 ))
 
 lazy val root = Project(

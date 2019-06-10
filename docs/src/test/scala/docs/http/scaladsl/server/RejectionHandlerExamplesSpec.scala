@@ -78,19 +78,18 @@ class RejectionHandlerExamplesSpec extends RoutingSpec with CompileOnlySpec {
     //#example-1
     import akka.http.scaladsl.coding.Gzip
 
-    val route =
-      path("order") {
-        concat(
-          get {
-            complete("Received GET")
-          },
-          post {
-            decodeRequestWith(Gzip) {
-              complete("Received compressed POST")
-            }
+    path("order") {
+      concat(
+        get {
+          complete("Received GET")
+        },
+        post {
+          decodeRequestWith(Gzip) {
+            complete("Received compressed POST")
           }
-        )
-      }
+        }
+      )
+    }
     //#example-1
   }
 

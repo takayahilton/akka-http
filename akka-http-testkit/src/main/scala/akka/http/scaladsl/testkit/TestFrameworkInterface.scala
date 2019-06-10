@@ -10,7 +10,7 @@ import org.scalatest.{ BeforeAndAfterAll, Suite }
 //#source-quote
 trait TestFrameworkInterface {
 
-  def cleanUp()
+  def cleanUp(): Unit
 
   def failTest(msg: String): Nothing
 }

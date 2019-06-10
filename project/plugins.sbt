@@ -22,6 +22,7 @@ addSbtPlugin("com.lightbend.akka" % "sbt-paradox-akka" % "0.18")
 addSbtPlugin("com.lightbend.paradox" % "sbt-paradox-apidoc" % "0.1+7-9b5a4054")
 addSbtPlugin("com.lightbend" % "sbt-whitesource" % "0.1.13")
 addSbtPlugin("de.heikoseeberger" % "sbt-header" % "5.0.0")
+addSbtPlugin("ch.epfl.scala" % "sbt-scalafix" % "0.9.5")
 
 // used in ValidatePullRequest to check github PR comments whether to build all subprojects
 libraryDependencies += "org.kohsuke" % "github-api" % "1.92"

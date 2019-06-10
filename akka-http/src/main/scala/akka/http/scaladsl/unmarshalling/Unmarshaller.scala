@@ -86,7 +86,7 @@ object Unmarshaller
   implicit def identityUnmarshaller[T]: Unmarshaller[T, T] = Unmarshaller(_ => FastFuture.successful)
 
   // we don't define these methods directly on `Unmarshaller` due to variance constraints
-  implicit class EnhancedUnmarshaller[A, B](val um: Unmarshaller[A, B]) extends AnyVal {
+  implicit class EnhancedUnmarshaller[A, B](private val um: Unmarshaller[A, B]) extends AnyVal {
     def mapWithInput[C](f: (A, B) => C): Unmarshaller[A, C] =
       Unmarshaller.withMaterializer(implicit ec => implicit mat => a => um(a).fast.map(f(a, _)))
 
@@ -94,7 +94,7 @@ object Unmarshaller
       Unmarshaller.withMaterializer(implicit ec => implicit mat => a => um(a).fast.flatMap(f(a, _)))
   }
 
-  implicit class EnhancedFromEntityUnmarshaller[A](val underlying: FromEntityUnmarshaller[A]) extends AnyVal {
+  implicit class EnhancedFromEntityUnmarshaller[A](private val underlying: FromEntityUnmarshaller[A]) extends AnyVal {
     def mapWithCharset[B](f: (A, HttpCharset) => B): FromEntityUnmarshaller[B] =
       underlying.mapWithInput { (entity, data) => f(data, Unmarshaller.bestUnmarshallingCharsetFor(entity)) }
 

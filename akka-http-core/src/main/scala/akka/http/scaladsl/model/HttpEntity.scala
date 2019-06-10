@@ -691,7 +691,7 @@ object HttpEntity {
   }
 
   /** Adds Scala DSL idiomatic methods to [[HttpEntity]], e.g. versions of methods with an implicit [[Materializer]]. */
-  implicit final class HttpEntityScalaDSLSugar(val httpEntity: HttpEntity) extends AnyVal {
+  implicit final class HttpEntityScalaDSLSugar(private val httpEntity: HttpEntity) extends AnyVal {
     /**
      * Discards the entities data bytes by running the `dataBytes` Source contained in this `entity`.
      *

@@ -175,7 +175,7 @@ class ParameterDirectivesSpec extends FreeSpec with GenericRoutingSpec with Insi
   "The 'parameters' extraction directive should" - {
     "extract the value of given parameters" in {
       Get("/?name=Parsons&FirstName=Ellen") ~> {
-        parameters("name", 'FirstName) { (name, firstName) =>
+        parameters(("name", 'FirstName)) { (name, firstName) =>
           complete(firstName + name)
         }
       } ~> check { responseAs[String] shouldEqual "EllenParsons" }
@@ -186,21 +186,21 @@ class ParameterDirectivesSpec extends FreeSpec with GenericRoutingSpec with Insi
     }
     "ignore additional parameters" in {
       Get("/?name=Parsons&FirstName=Ellen&age=29") ~> {
-        parameters("name", 'FirstName) { (name, firstName) =>
+        parameters(("name", 'FirstName)) { (name, firstName) =>
           complete(firstName + name)
         }
       } ~> check { responseAs[String] shouldEqual "EllenParsons" }
     }
     "reject the request with a MissingQueryParamRejection if a required parameter is missing" in {
       Get("/?name=Parsons&sex=female") ~> {
-        parameters('name, 'FirstName, 'age) { (name, firstName, age) =>
+        parameters(('name, 'FirstName, 'age)) { (name, firstName, age) =>
           completeOk
         }
       } ~> check { rejection shouldEqual MissingQueryParamRejection("FirstName") }
     }
     "supply the default value if an optional parameter is missing" in {
       Get("/?name=Parsons&FirstName=Ellen") ~> {
-        parameters("name".?, 'FirstName, 'age ? "29", 'eyes.?) { (name, firstName, age, eyes) =>
+        parameters(("name".?, 'FirstName, 'age ? "29", 'eyes.?)) { (name, firstName, age, eyes) =>
           complete(firstName + name + age + eyes)
         }
       } ~> check { responseAs[String] shouldEqual "EllenSome(Parsons)29None" }

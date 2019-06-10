@@ -22,7 +22,7 @@ class RouteJavaScalaDslConversionSpec extends WordSpec {
 
       // Remember that Route in Scala is just a type alias:
       //   type Route = RequestContext => Future[RouteResult]
-      val scalaRoute: akka.http.scaladsl.server.Route = javaRoute.asScala
+      javaRoute.asScala
       //#java-to-scala
     }
 
@@ -33,8 +33,7 @@ class RouteJavaScalaDslConversionSpec extends WordSpec {
           akka.http.scaladsl.server.Directives.complete("OK")
         }
 
-      val javaRoute: akka.http.javadsl.server.Route =
-        akka.http.javadsl.server.directives.RouteAdapter.asJava(scalaRoute)
+      akka.http.javadsl.server.directives.RouteAdapter.asJava(scalaRoute)
       //#scala-to-java
     }
   }
