@@ -6,6 +6,7 @@ resolvers += Resolver.sonatypeRepo("releases") // to more quickly obtain paradox
 // which is used by plugin "org.kohsuke" % "github-api" % "1.68"
 resolvers += Resolver.jcenterRepo
 
+addSbtCoursier
 addSbtPlugin("com.typesafe.sbt" % "sbt-multi-jvm" % "0.4.0")
 addSbtPlugin("com.typesafe.sbt" % "sbt-git" % "0.9.3")
 addSbtPlugin("com.typesafe" % "sbt-mima-plugin" % "0.4.0")
